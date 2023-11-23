@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Selector</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+
+    <label for="brand">Select Brand:</label>
+    <select id="brand"></select>
+
+    <label for="model">Select Model:</label>
+    <select id="model"></select>
+
+   <script>
+    $(document).ready(function () {
+        // Load CSV file
+        $.ajax({
+            url: 'cars.csv',
+            dataType: 'text',
+            success: function (data) {
+                // Split the CSV data into rows
+                var rows = data.split('\n');
+                var brands = {};
+                var brandModels = {};
+
+                // Loop through rows and extract brands and models
+                // Loop through rows and extract brands and models
+for (var i = 1; i < rows.length; i++) {
+    var columns = rows[i].split(',');
+
+    // Check if the row has at least two columns
+    if (columns.length >= 2) {
+        var brand = columns[0].trim();
+        var model = columns[1].trim();
+
+        // Populate brands dropdown
+        if (!brands[brand]) {
+            brands[brand] = true;
+            $('#brand').append($('<option value="' + brand + '">' + brand + '</option>'));
+            brandModels[brand] = [];
+        }
+
+        // Populate brand models array
+        brandModels[brand].push(model);
+    }
+}
+
+
+                // Debugging statements
+                console.log('Brands:', brands);
+                console.log('Brand Models:', brandModels);
+
+                // Populate models dropdown based on selected brand
+                $('#brand').change(function () {
+                    var selectedBrand = $(this).val();
+                    var models = brandModels[selectedBrand];
+
+                    // Debugging statement
+                    console.log('Selected Brand:', selectedBrand);
+
+                    // Clear previous models
+                    $('#model').empty();
+
+                    // Populate models dropdown
+                    for (var i = 0; i < models.length; i++) {
+                        $('#model').append($('<option value="' + models[i] + '">' + models[i] + '</option>'));
+                    }
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading CSV file:", status, error);
+            }
+        });
+    });
+</script>
+
+
+
+
+</body>
+</html>
